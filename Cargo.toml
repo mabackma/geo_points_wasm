@@ -1,0 +1,7 @@
+[package]
+name = "geo_points_wasm"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+geo_points = { path = "../geo_points" }
