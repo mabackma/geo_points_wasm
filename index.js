@@ -4,16 +4,16 @@ async function run() {
     // Initialize the WebAssembly module
     await init();
 
-    // Define a bounding box as a Polygon (example coordinates)
+    // Bounding box of the whole map
     const bbox = {
         type: "Polygon",
         coordinates: [
             [
-                [0, 0],
-                [10, 0],
-                [10, 10],
-                [0, 10],
-                [0, 0]
+                [25.347136232586948, 66.42980392068148],
+                [25.42651387476916, 66.42980392068148],
+                [25.42651387476916, 66.46850960846054],
+                [25.347136232586948, 66.46850960846054],
+                [25.347136232586948, 66.42980392068148]
             ]
         ]
     };
