@@ -1,4 +1,3 @@
-/* 
 use geo::BooleanOps;
 use geo_points::forest_property::forest_property_data::ForestPropertyData;
 use geo_points::main_functions::{
@@ -10,10 +9,10 @@ use geo_points::main_functions::{
     save_geojson
 };
 use geo_points::geometry_utils::get_min_max_coordinates;
-use geo_points::requests::{fetch_buildings, fetch_buildings_as_polygons, fetch_roads};
+use geo_points::requests_wasm::{fetch_buildings, fetch_roads};
 use geojson::{FeatureCollection, GeoJson};
 use std::error::Error;
-
+/*
 fn main() -> Result<(), Box<dyn Error>>{
     let mut bbox = get_bounding_box_of_map();
     bbox = random_bbox(&bbox);
