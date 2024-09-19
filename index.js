@@ -10,6 +10,9 @@ async function handleFile(file) {
         await init();
 
         try {
+            // Start timing
+            const start = performance.now();
+
             // Example coordinates for the bounding box
             const min_x = 25.347136232586948;
             const max_x = 25.42651387476916;
@@ -18,6 +21,12 @@ async function handleFile(file) {
 
             // Call the WebAssembly function with the XML content
             const result = await geo_json_from_coords(min_x, max_x, min_y, max_y, xmlContent);
+
+            // End timing
+            const end = performance.now();
+            const duration = end - start;
+            console.log(`Time elapsed: ${duration} ms`);
+            
             console.log('GeoJson:', result);
         } catch (error) {
             console.error('Error:', error);
