@@ -7,7 +7,8 @@ async function handleFile(file) {
         const xmlContent = event.target.result;
 
         // Initialize the WebAssembly module
-        await init();
+        const wasm = await init();
+        const memory = wasm.memory
 
         try {
             // Start timing
@@ -24,11 +25,12 @@ async function handleFile(file) {
             const geojson = result.geojson;
             const treeCount = result.tree_count;
 
-            // Create buffer for the tree data
+            // Create a new SharedBuffer to store tree data
             const buffer = new SharedBuffer(treeCount);
 
-            const trees = buffer.read_trees();
-            
+            // Access the raw memory buffer directly using Float64Array
+            const wasmMemory = new Float64Array(memory.buffer, buffer.ptr(), buffer.len());
+
             // End timing
             const end = performance.now();
             const duration = end - start;
@@ -36,9 +38,10 @@ async function handleFile(file) {
             
             // Log the GeoJSON and tree data
             console.log('GeoJson:', geojson);
-            trees.forEach(tree => {
-                console.log(`Tree: x=${tree.x}, y=${tree.y}, species=${tree.species}`);
-            });
+            console.log('Tree count:', treeCount);
+            for (let i = 0; i < wasmMemory.length; i += 3) {
+                console.log(`Tree: x=${wasmMemory[i]}, y=${wasmMemory[i + 1]}, species=${wasmMemory[i + 2]}`);
+            }
         } catch (error) {
             console.error('Error:', error);
         }

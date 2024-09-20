@@ -805,7 +805,6 @@ dependencies = [
  "geo-types 0.7.13",
  "geojson",
  "image",
- "js-sys",
  "proj4rs",
  "quick-xml",
  "rand",
