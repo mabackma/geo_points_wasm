@@ -1,4 +1,4 @@
-import init, { geo_json_from_coords } from './pkg/geo_points_wasm.js';
+import init, { geo_json_from_coords, SharedBuffer } from './pkg/geo_points_wasm.js';
 
 async function handleFile(file) {
     const reader = new FileReader();
@@ -21,13 +21,24 @@ async function handleFile(file) {
 
             // Call the WebAssembly function with the XML content
             const result = await geo_json_from_coords(min_x, max_x, min_y, max_y, xmlContent);
+            const geojson = result.geojson;
+            const treeCount = result.tree_count;
 
+            // Create buffer for the tree data
+            const buffer = new SharedBuffer(treeCount);
+
+            const trees = buffer.read_trees();
+            
             // End timing
             const end = performance.now();
             const duration = end - start;
             console.log(`Time elapsed: ${duration} ms`);
             
-            console.log('GeoJson:', result);
+            // Log the GeoJSON and tree data
+            console.log('GeoJson:', geojson);
+            trees.forEach(tree => {
+                console.log(`Tree: x=${tree.x}, y=${tree.y}, species=${tree.species}`);
+            });
         } catch (error) {
             console.error('Error:', error);
         }
