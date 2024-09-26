@@ -31,12 +31,10 @@ async function handleFile(file) {
             const geojson = result.geojson;
             const treeCount = result.tree_count;
             const maxTreeCount = result.max_tree_count;
-
-            // Create a new SharedBuffer to store tree data
-            const buffer = new SharedBuffer(maxTreeCount);
+            const bufferPtr = result.buffer_pointer;
 
             // Access the raw memory buffer directly using Float64Array
-            const wasmMemory = new Float64Array(memory.buffer, buffer.ptr(), maxTreeCount * 3);
+            const wasmMemory = new Float64Array(memory.buffer, Number(bufferPtr), maxTreeCount * 3);
 
             // End timing
             const end = performance.now();
@@ -47,19 +45,24 @@ async function handleFile(file) {
             console.log('GeoJson:', geojson);
             console.log('Max tree count:', maxTreeCount);
             console.log('Tree count:', treeCount);
-            console.log('Buffer Pointer:', buffer.ptr());
+            console.log('Buffer Pointer:', bufferPtr);
 
-            for (let i = 0; i < wasmMemory.length; i += 3) {
-                const x = wasmMemory[i];      // x coordinate
-                const y = wasmMemory[i + 1];  // y coordinate
-                const species = wasmMemory[i + 2]; // species as f64
+            let erroneousTrees = 0;
+            for (let i = 0; i < wasmMemory.length / 3; i++) {
+                const x = wasmMemory[i * 3];      // x coordinate
+                const y = wasmMemory[i * 3 + 1];  // y coordinate
+                const species = wasmMemory[i * 3 + 2]; // species as f64
 
                 if (species !== 0) {
-                    console.log(`JAVASCRIPT Tree: x=${x}, y=${y}, tree species=${species}`);
-                }                
+                    console.log(`JAVASCRIPT Tree ${i}: x=${x}, y=${y}, tree species=${species}`);
+                    if (!Number.isInteger(species)) {
+                        erroneousTrees++;
+                    }   
+                }             
             }
 
-            console.log(`Done logging ${wasmMemory.length / 3} trees`);
+            console.log(`Done logging ${treeCount} trees`);
+            console.log(`Erroneous trees: ${erroneousTrees}`);
         } catch (error) {
             console.error('Error:', error);
         }
