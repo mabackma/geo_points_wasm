@@ -55,7 +55,7 @@ async function handleFile(file) {
 
                 if (species !== 0) {
                     console.log(`JAVASCRIPT Tree ${i}: x=${x}, y=${y}, tree species=${species}`);
-                    if (!Number.isInteger(species)) {
+                    if (!Number.isInteger(species) || x < min_x || x > max_x || y < min_y || y > max_y) {
                         erroneousTrees++;
                     }   
                 }             
